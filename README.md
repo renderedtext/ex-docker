@@ -1,20 +1,61 @@
 # Docker
 
-**TODO: Add description**
+Easy docker management from Elixir.
 
 ## Installation
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+``` elixir
+def deps do
+  {:docker, github: "renderedtext/ex-docker"}
+end
+```
 
-  1. Add docker to your list of dependencies in `mix.exs`:
+## Usage
 
-        def deps do
-          [{:docker, "~> 0.0.1"}]
-        end
+List docker images:
 
-  2. Ensure docker is started before your application:
+``` elixir
+Docker.Images.list
 
-        def application do
-          [applications: [:docker]]
-        end
+=> [
+     %{
+        created_at: "2016-08-11 19:46:03 +0200 CEST",
+        image_id: "ff6011336327",
+        repository: "ubuntu",
+        tag: "14.04",
+        virtual_size: "188 MB"
+     },
+     %{
+        created_at: "2016-08-11 19:46:03 +0200 CEST",
+        image_id: "ff6011336327",
+        repository: "ubuntu",
+        tag: "14.04",
+        virtual_size: "188 MB"
+     }
+   ]
+```
+
+List docker containers:
+
+``` elixir
+Docker.Containers.list
+
+# TODO
+=> [
+     %{
+        created_at: "2016-08-11 19:46:03 +0200 CEST",
+        image_id: "ff6011336327",
+        repository: "ubuntu",
+        tag: "14.04",
+        virtual_size: "188 MB"
+     },
+     %{
+        created_at: "2016-08-11 19:46:03 +0200 CEST",
+        image_id: "ff6011336327",
+        repository: "ubuntu",
+        tag: "14.04",
+        virtual_size: "188 MB"
+     }
+   ]
+```
 
