@@ -15,16 +15,9 @@ end
 List docker images:
 
 ``` elixir
-Docker.Images.list
+Docker.Image.list
 
 => [
-     %{
-        created_at: "2016-08-11 19:46:03 +0200 CEST",
-        image_id: "ff6011336327",
-        repository: "ubuntu",
-        tag: "14.04",
-        virtual_size: "188 MB"
-     },
      %{
         created_at: "2016-08-11 19:46:03 +0200 CEST",
         image_id: "ff6011336327",
@@ -35,10 +28,28 @@ Docker.Images.list
    ]
 ```
 
+Filter docker images by repository name:
+
+``` elixir
+Docker.Image.list(repository: ~r/ubuntu/)
+```
+
+Find docker image:
+
+``` elixir
+Docker.Image.find(repository: ~r/ubuntu/)
+```
+
+Run docker image:
+
+``` elixir
+Docker.Image.find(repository: ~r/ubuntu/) |> Docker.Image.run("echo 'test'")
+```
+
 List docker containers:
 
 ``` elixir
-Docker.Containers.list
+Docker.Container.list
 
 => [
      %{
@@ -54,3 +65,8 @@ Docker.Containers.list
    ]
 ```
 
+Filter containers by image name:
+
+``` elixir
+Docker.Image.list(image: ~r/ubuntu/)
+```
