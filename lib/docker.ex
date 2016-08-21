@@ -9,7 +9,7 @@ defmodule Docker do
     end
 
     def list(repository: name) do
-      list |> Enum.filter(fn(image) -> String.containes?(image.repository, name) end)
+      list |> Enum.filter(fn(image) -> String.contains?(image.repository, name) end)
     end
 
     def find(repository: name), do: list(repository: name) |> hd
@@ -19,14 +19,16 @@ defmodule Docker do
       net       = Keyword.get(options, :net)       || "bridge"
       variables = Keyword.get(options, :variables) || %{}
 
-      container_id = Shell.execute("docker run --net=#{net} #{prepare_environment_variables(variables)} -tdi #{id} #{command}")
+      command = "docker run --net=#{net} #{prepare_variables(variables)} -tdi #{id} #{command}"
+
+      container_id = Shell.execute(command)
 
       short_id = container_id |> String.slice(0..11)
 
       Docker.Container.find(container_id: short_id)
     end
 
-    defp prepare_environment_variables(env_vars) do
+    defp prepare_variables(env_vars) do
       env_vars
       |> Enum.map(fn({k, v}) -> "-e #{to_string(k)}=#{to_string(v)} " end)
       |> Enum.join(" ")
@@ -42,11 +44,11 @@ defmodule Docker do
     end
 
     def list(image: image) do
-      list |> Enum.filter(fn(container) -> String.containes?(container.image, image) end)
+      list |> Enum.filter(fn(container) -> String.contains?(container.image, image) end)
     end
 
     def list(container_id: id) do
-      list |> Enum.filter(fn(container) -> String.containes?(container.container_id, id) end)
+      list |> Enum.filter(fn(container) -> String.contains?(container.container_id, id) end)
     end
 
     def find(image: image),     do: list(image: image) |> hd
