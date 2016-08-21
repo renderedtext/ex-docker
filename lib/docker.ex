@@ -9,15 +9,19 @@ defmodule Docker do
     end
 
     def list(repository: name) do
-      list |> Enum.filter(fn(image) -> image.repository =~ name end)
+      list |> Enum.filter(fn(image) -> String.containes?(image.repository, name) end)
     end
 
     def find(repository: name), do: list(repository: name) |> hd
 
-    def run(%{image_id: id}, command, variables \\ [], net \\ "bridge") do
-      id = Shell.execute("docker run --net=#{net} #{prepare_environment_variables(variables)} -tdi #{id} #{command}")
+    def run(%{image_id: id}, options \\ []) do
+      command   = Keyword.get(options, :command)   || ""
+      net       = Keyword.get(options, :net)       || "bridge"
+      variables = Keyword.get(options, :variables) || %{}
 
-      short_id = id |> String.slice(0..11)
+      container_id = Shell.execute("docker run --net=#{net} #{prepare_environment_variables(variables)} -tdi #{id} #{command}")
+
+      short_id = container_id |> String.slice(0..11)
 
       Docker.Container.find(container_id: short_id)
     end
@@ -38,11 +42,11 @@ defmodule Docker do
     end
 
     def list(image: image) do
-      list |> Enum.filter(fn(container) -> container.image =~ image end)
+      list |> Enum.filter(fn(container) -> String.containes?(container.image, image) end)
     end
 
     def list(container_id: id) do
-      list |> Enum.filter(fn(container) -> container.container_id =~ id end)
+      list |> Enum.filter(fn(container) -> String.containes?(container.container_id, id) end)
     end
 
     def find(image: image),     do: list(image: image) |> hd

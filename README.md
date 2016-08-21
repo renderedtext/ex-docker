@@ -31,19 +31,34 @@ Docker.Image.list
 Filter docker images by repository name:
 
 ``` elixir
-Docker.Image.list(repository: ~r/ubuntu/)
+Docker.Image.list(repository: "ubuntu")
 ```
 
 Find docker image:
 
 ``` elixir
-Docker.Image.find(repository: ~r/ubuntu/)
+Docker.Image.find(repository: "ubuntu")
 ```
 
 Run docker image:
 
 ``` elixir
-Docker.Image.find(repository: ~r/ubuntu/) |> Docker.Image.run("echo 'test'")
+image = Docker.Image.find(repository: "ubuntu")
+
+Docker.Image.run(image, command: "echo 'test'", net: "host")
+
+=> [
+     %{
+       command: "echo 'test'",
+       container_id: "bbcabf45d518",
+       created_at: "2016-08-21 15:46:51 +0200 CEST",
+       image: "ubuntu:14.04",
+       labels: "",
+       names: "zen_goldwasser",
+       ports: "",
+       status: "Up 1 second"
+     }
+   ]
 ```
 
 List docker containers:
@@ -68,5 +83,5 @@ Docker.Container.list
 Filter containers by image name:
 
 ``` elixir
-Docker.Image.list(image: ~r/ubuntu/)
+Docker.Image.list(image: "ubuntu")
 ```
