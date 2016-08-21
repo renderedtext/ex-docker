@@ -14,12 +14,18 @@ defmodule Docker do
 
     def find(repository: name), do: list(repository: name) |> hd
 
-    def run(%{image_id: id}, command) do
-      id = Shell.execute("docker run -tdi #{id} #{command}")
+    def run(%{image_id: id}, command, variables \\ [], net \\ "bridge") do
+      id = Shell.execute("docker run --net=#{net} #{prepare_environment_variables(variables)} -tdi #{id} #{command}")
 
       short_id = id |> String.slice(0..11)
 
       Docker.Container.find(container_id: short_id)
+    end
+
+    defp prepare_environment_variables(env_vars) do
+      env_vars
+      |> Enum.map(fn({k, v}) -> "-e #{to_string(k)}=#{to_string(v)} " end)
+      |> Enum.join(" ")
     end
   end
 
