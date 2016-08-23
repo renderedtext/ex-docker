@@ -58,6 +58,10 @@ defmodule Docker do
       Shell.execute("docker stop #{id}")
       nil
     end
+
+    def logs(%{container_id: id}) do
+      Shell.execute("docker logs #{id}")
+    end
   end
 
 end
