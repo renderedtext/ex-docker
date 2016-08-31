@@ -12,7 +12,12 @@ defmodule Docker do
       list |> Enum.filter(fn(image) -> String.contains?(image.repository, name) end)
     end
 
-    def find(repository: name), do: list(repository: name) |> hd
+    def find(repository: name) do
+      case list(repository: name) do
+        [image|_] -> image
+        _ -> raise "Image with repository name '#{name}' not found"
+      end
+    end
 
     def run(%{image_id: id}, options \\ []) do
       command   = Keyword.get(options, :command)   || ""
@@ -51,8 +56,19 @@ defmodule Docker do
       list |> Enum.filter(fn(container) -> String.contains?(container.container_id, id) end)
     end
 
-    def find(image: image),     do: list(image: image) |> hd
-    def find(container_id: id), do: list(container_id: id) |> hd
+    def find(image: image) do
+      case list(image: image) do
+        [container|_] -> container
+        _ -> raise "Container for image '#{image}' not found"
+      end
+    end
+
+    def find(container_id: id) do
+      case list(container_id: id) do
+        [container|_] -> container
+        _ -> raise "Container with id '#{id}' not found"
+      end
+    end
 
     def stop(%{container_id: id}) do
       Shell.execute("docker stop #{id}")
