@@ -21,7 +21,12 @@ defmodule Docker.Parser do
   end
 
   def parse_field(raw_field) do
-    [key, value] = raw_field |> String.split(": ", parts: 2)
+    [key, value] =
+      if String.match?(raw_field, ~r/.+: .+/) do
+        raw_field |> String.split(": ", parts: 2)
+      else
+        raw_field |> String.split(":", parts: 2)
+      end
 
     {key |> String.downcase |> String.to_atom, value}
   end
